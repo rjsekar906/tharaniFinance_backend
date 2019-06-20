@@ -26,6 +26,16 @@ public interface LoanInfoDetailRepository extends JpaRepository<LoanInfoDetail, 
 
 	 @Query("select ld from LoanInfoDetail ld where ld.activeIndicator=:activeIndicator and ld.borrower.id=:empId")
 	  Page<LoanInfoDetail> findAllEmpId(@Param("activeIndicator") Boolean activeIndicator,@Param("empId") Long empId, Pageable pageable);
+	 
+	 @Query("select ld from LoanInfoDetail ld where ld.activeIndicator=:activeIndicator and ld.borrower.id=:borrowerId and DATE(ld.dueDate) >= DATE(:fromDate) AND  DATE(ld.dueDate) <= DATE(:toDate)")
+	public Page<LoanInfoDetail> findAllByActiveIndicator(@Param("activeIndicator") Boolean activeIndicator,@Param("borrowerId") Long borrowerId, 
+			@Param("fromDate") String fromDate,@Param("toDate") String toDate , Pageable pageable);
 
+	 @Query("select ld from LoanInfoDetail ld where ld.activeIndicator=:activeIndicator and ld.borrower.id=:borrowerId and DATE(ld.dueDate) = DATE(:fromDate)")
+		public Page<LoanInfoDetail> findAllByActiveIndicator(@Param("activeIndicator") Boolean activeIndicator,@Param("borrowerId") Long borrowerId, 
+				@Param("fromDate") String fromDate, Pageable pageable);
+	 
+	 @Query("select ld from LoanInfoDetail ld where ld.activeIndicator=:activeIndicator and DATE(ld.dueDate) = DATE(:fromDate)")
+		public Page<LoanInfoDetail> findAllByActiveIndicator(@Param("activeIndicator") Boolean activeIndicator,@Param("fromDate") String fromDate, Pageable pageable);
 
 }

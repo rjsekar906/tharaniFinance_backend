@@ -66,7 +66,7 @@ public class LoanDetailController {
 					if (loanDetail.getBorrowerId()==null&&loanDetail.getBorrowerId() == null) {
 					String userIdFolder=String.valueOf(loanDetail.getBorrowerId());
 					
-                  	if(borrower.getId()==null){
+                  	if(loanDetail.getBorrowerId()==null){
     					Path filePathProof = Paths.get(FILE_DIRECTORY+userIdFolder+ File.separator  +"Guarantee" +File.separator + borrower.getFiles()[0].getOriginalFilename());
 
     					Files.copy(borrower.getFiles()[0].getInputStream(), filePathProof, StandardCopyOption.REPLACE_EXISTING);
@@ -81,18 +81,21 @@ public class LoanDetailController {
 				}
 				loanDetail.setBorrower(borrower);
 				loanDetail.setActiveIndicator(true);
+				
 				loanDetailRepository.save(loanDetail);
+				int dueNo=0;
 				if(loanDetail.getNoOfDues()!=0 && loanDetail.getNoOfDues()!=null){
+					dueNo=loanDetail.getNoOfDues();
 					for(int i=0;i<=loanDetail.getNoOfDues()-1;i++){
 					LoanInfoDetail loaninfoDetail =new LoanInfoDetail();
 					loaninfoDetail.setActiveIndicator(true);
 					loaninfoDetail.setIsAmountPaid(false);
 					loaninfoDetail.setDueAmount(loanDetail.getDueAmount());
-					//loaninfoDetail.setDueDate(loanDetail.getDueDate());
-					loaninfoDetail.setDueDate(new Date());
+					loaninfoDetail.setDueDate(loanDetail.getDueDate());
+			
 					DateUtil dateUtil=new DateUtil();
-					//loaninfoDetail.setPayDate(dateUtil.addDays(loanDetail.getBorrowDate(), 1));
-					loaninfoDetail.setPayDate(dateUtil.addDays(new Date(), 1));
+					loaninfoDetail.setPayDate(dateUtil.addDays(loanDetail.getBorrowDate(), i+1));
+					
 					loaninfoDetail.setLoanDetail(loanDetail);
 					loaninfoDetail.setBorrower(borrower);
 					loanInfoDetailRepository.save(loaninfoDetail);
